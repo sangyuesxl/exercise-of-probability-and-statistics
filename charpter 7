@@ -1,0 +1,139 @@
+#概率论与数理统计（浙大版）第7章习题
+# program by sangyue
+import numpy as np
+from scipy.stats import norm,t,chi2,f
+import matplotlib.pyplot as plt
+from math import sqrt,pi,exp
+
+def exercise_1():
+    #习题1
+    R=np.array([74.001,74.005,74.003,74.001,
+                74,73.998,74.006,74.002])
+    A1=np.mean(R)
+    A2=sum([i*i for i in R ])/len(R)
+    u=A1
+    sigma2=A2-A1*A1
+    S2=sum([(i-A1)**2 for i in R])/(len(R)-1)
+    print(u,sigma2,S2)
+
+def exercise_6():
+    i=np.array([0,1,2,3,4,5,6,7,8,9])
+    n=np.array([0,1,6,7,23,26,21,12,3,1,0])
+    x_bar=sum([(ii*nn) for ii,nn in zip(i,n)])/(100*10)
+    p=x_bar
+    print(p)
+
+def exercise_7():
+    r=np.array([0,1,2,3,4,5])
+    s=np.array([44,42,21,9,4,2])
+    ex=sum([(rr*ss) for rr,ss in zip(r,s)])/122
+    p=exp(-ex)
+    print(p)
+
+def exercise_10():
+    #习题10
+    #ex=u
+    #dx=sigma2
+    #c=1/(n-1)/2
+    #c=1/n
+    i=i+1
+
+def exercise_16():
+    #习题16
+    X=np.array([6.0,5.7,5.8,6.5,7.0,6.3,5.6,6.1,5.0])
+    X_bar=np.mean(X)
+    alpha=0.05
+    sigma=0.6
+    uz1=X_bar-norm.ppf(1-alpha/2,loc=0,scale=1)*sigma/sqrt(len(X))
+    uz2=X_bar-norm.ppf(alpha/2,loc=0,scale=1)*sigma/sqrt(len(X))
+    print("Z估计置信区间为：",uz1,uz2)
+
+    S=[(epoch-X_bar)**2 for epoch in X]
+    S=sqrt(sum(S)/(len(X)-1))
+    ut1=X_bar-t.ppf(1-alpha/2,len(X)-1)*S/sqrt(len(X))
+    ut2=X_bar-t.ppf(alpha/2,len(X)-1)*S/sqrt(len(X))
+    print("T估计置信区间为：",ut1,ut2)
+
+    #绘图部分
+    X1=np.linspace(0,12,1000)
+    Y1=[norm.pdf(i,loc=6,scale=0.6) for i in X1]
+    Y2=[t.pdf(i-6,len(X)-1) for i in X1]
+    plt.figure(figsize=[8,6])
+    plt.xlabel("干燥time")
+    plt.ylabel("probability")
+    plt.plot(X1,Y1,c="r",label='Z estmate')
+    plt.plot(X1,Y2,c="g",label='T estmate')
+    plt.legend()
+    plt.plot([ut1,ut1],[0,t.pdf(ut1-6,len(X)-1)],c="b")
+    plt.plot([ut2,ut2],[0,t.pdf(ut2-6,len(X)-1)],c="b")
+    cdf=norm.cdf(uz2,loc=6,scale=0.6)-norm.cdf(uz1,loc=6,scale=0.6)
+    print(cdf)
+    plt.show()
+def exercise_17():
+    #习题17
+    g=np.array([6.683,6.681,6.676,6.678,6.679,6.672])
+    b=np.array([6.661,6.661,6.667,6.667,6.664])
+    ex1=np.mean(g)
+    s1_2=sum([(xi-ex1)**2 for xi in g])/(len(g)-1)
+    ex2=np.mean(b)
+    s2_2=sum([(xi-ex2)**2 for xi in b])/(len(b)-1)
+    #(x-ex)/(s/sqrt(n))~t(n-1)
+    #x_bar-t0.05(n-1)*s/sqrt(n)>u>x_bar-t0.95(n-1)*s/sqrt(n)>
+    u11=ex1-t.ppf(0.95,(len(g)-1))*sqrt(s1_2/len(g))
+    u12=ex1-t.ppf(0.05,len(g)-1)*sqrt(s1_2/len(g))
+    print("first range ex=",u11,u12)
+    u21=ex2-t.ppf(0.95,len(b)-1)*sqrt(s2_2/len(b))
+    u22=ex2-t.ppf(0.05,len(b)-1)*sqrt(s2_2/len(b))
+    print('second range ex=',u21,u22)
+
+    #(n-1)s^2/ka0.05(n-1)>sigma^2>(n-1)s^2/ka0.95(n-1)
+    sigma11=(len(g)-1)*s1_2/chi2.ppf(0.05,(len(g)-1))
+    sigma12=(len(g)-1)*s1_2/chi2.ppf(0.95,(len(g)-1))
+    print("first range sigma2=",sigma11,sigma12)
+    sigma21=(len(b)-1)*s2_2/chi2.ppf(0.05,(len(b)-1))
+    sigma22=(len(b)-1)*s2_2/chi2.ppf(0.95,(len(b)-1))
+    print("second range sigma2=",sigma21,sigma22)
+
+def exercise_18():
+    s=11
+    n=9
+    sigma1_2=(n-1)*s*s/chi2.ppf(0.975,n-1)
+    sigma2_2=(n-1)*s*s/chi2.ppf(0.025,n-1)
+    print("sigma range=",sqrt(sigma1_2),sqrt(sigma2_2))
+
+def exercise_21():
+    A=np.array([0.143,0.142,0.143,0.137])
+    B=np.array([0.140,0.142,0.136,0.138,0.140])
+    A_bar=np.mean(A)
+    SA2=sum([(Ai -A_bar)**2 for Ai in A])
+    B_bar=np.mean(B)
+    SB2=sum([(Bi-B_bar)**2 for Bi in B])
+    print(A_bar,SA2)
+
+def exercise_23():
+    sa2=0.5419
+    sb2=0.6065
+    #sa2/sb2/(sigmaa/sigmab)=F(na-1,nb-1)
+    sigma1=sa2/sb2/f.ppf(0.025,9,9)
+    sigma2=sa2/sb2/f.ppf(0.975,9,9)
+    print(sigma2,sigma1)
+
+def exercise_26():
+    #习题26
+    km=np.array([41250,40187,43175,41010,39265,41872,42654,41287,
+                 38970,40200,42550,41095,40680,43500,39775,40400])
+    u=np.mean(km)
+    S2=sum([(Xi-u)**2 for Xi in km])/(len(km)-1)
+    u_low=u-t.ppf(0.95,len(km)-1)*sqrt(S2/len(km))
+    print(u,S2,u_low)
+
+def exercise_27():
+    #exercise 27
+    age=np.array([40,36,23,40,31,33,49,33,34,43,26,39])
+    x_bar=np.mean(age)
+    s2=sum([(xi-x_bar)**2 for xi in age])/(len(age)-1)
+    u_up=x_bar-t.ppf(0.05,len(age)-1)*sqrt(s2/len(age))
+    print(0,u_up)
+
+if __name__=="__main__":
+    exercise_23()
