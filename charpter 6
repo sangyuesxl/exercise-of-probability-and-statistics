@@ -1,0 +1,64 @@
+#概率论与数理统计第6章习题
+# program by sangyue
+import numpy as np
+from scipy.stats import norm,t,chi2
+import matplotlib.pyplot as plt
+from math import sqrt,pi,exp
+
+def exercise61():
+    #x_bar~norm(52,6.3**2/36)
+    x_bar=norm(52,6.3**2/36)
+    p1=norm.cdf(50.8,loc=52,scale=sqrt(6.3**2/36))
+    p2=norm.cdf(53.8,loc=52,scale=sqrt(6.3**2/36))
+    p=p2-p1
+    print("样本均值落在50.8到53.8之间的概率=",p)
+
+def exercise63():
+    #x1~N(20,3/10)
+    #X2~N(20,3/15)
+    #X~N(20-20,3/10-3/15)
+    X1=norm(20,3/10.0)
+    X2=norm(20,3/15.0)
+    X=norm(20-20,sqrt(3/10+3/15))
+    p1=X.cdf(-0.3)
+    p2=X.cdf(0.3)
+    print("样本均值差的绝对值大于0.3的概率=",p1+(1-p2))
+
+def exercise65():
+    #X~N(u,sigma**2),
+    #f(x)=1/sqrt(2*pi)*exp(-(x-u)**2/(2*sigma**2))
+    #联合概率密度为概率密度的连乘
+    #f(x1,x2...x10)=(1/sqrt(2*pi)*exp(-(x-u)**2/(2*sigma**2)))**10
+    #x_bar~N(u,sigma**2/10)
+    #p(x_bar<u)=1/2
+    #u=62,sigma=5
+    p70=norm.cdf(70,62,5)
+    p=1-p70**10
+    print("至少一人得奖的概率:",p)
+
+def exercise69():
+    #p(S^2/sigma^2<=2.041)=p(15*S^2/sigma^2<=15*2.041)
+    p=chi2.cdf(15*2.041,15)
+    print("p(S^2/sigma^2<=2.041)=",p)
+    #D(S**2)=2*sigma**4/15
+
+def exercise610():
+    #绘制直方图
+    W=np.array([225,232,232,245,235,245,270,225,240,240,
+                217,195,225,185,200,220,200,210,271,240,
+                220,230,215,252,225,220,206,185,227,236])
+    W_range=np.linspace(184.5,271.5,6)
+    plt.figure(figsize=[8,4])
+    plt.subplot(1,2,1)
+    plt.xticks(W_range)
+    plt.xlabel('weight',color='red')
+    plt.hist(W,W_range)
+    plt.subplot(1,2,2)
+    plt.boxplot(W,sym="*")
+    plt.show()
+
+if __name__=="__main__":
+    # exercise61()
+    # exercise63()
+    # exercise65()
+    exercise69()
