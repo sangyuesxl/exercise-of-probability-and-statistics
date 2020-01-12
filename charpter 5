@@ -1,0 +1,108 @@
+#概率论与数理统计(浙大版)第5章习题
+# program by sangyue
+import numpy as np
+from scipy.stats import norm,t,chi2
+import matplotlib.pyplot as plt
+from math import sqrt,pi,exp
+
+def exercise_1():
+    #xi ti 1
+    ex=100
+    sigma=100
+    n=16
+    nx=(1920-16*100)/(sqrt(n)*sigma)
+    p=1-norm.cdf(nx,loc=0,scale=1)
+    print('总和大于1920h的概率为：',p)
+
+def exercise_3():
+    #习题3
+    ex=(-0.5+0.5)/2
+    dx=(0.5+0.5)/12
+    n=1500
+    zx=(15-1500*0)/(sqrt(n*dx))
+    p=(1-norm.cdf(zx,loc=0,scale=1))*2
+    print("绝对值超过15的概率为：",p)
+
+    error=10
+    zx1=norm.ppf(0.95,loc=0,scale=1)
+    n1=10**2/(zx1*zx1*dx)
+    print('最多个数',int(n1))
+
+def exercise_5():
+    #p 为X小于3m的概率
+    p=0.2
+    n=100
+    ex=n*p
+    dx=n*p*(1-p)
+    zx=((30-p*100)/sqrt(100*p*(1-p)))
+    px=norm.cdf(zx,loc=0,scale=1)
+    print("至少30跟少于3米的概率为：",1-px)
+
+def exercise_7():
+    #ex为数学期望,dx为方差
+    ex=1*0.3+1.2*0.2+1.5*0.5
+    dx=0.3*(1-ex)**2+0.2*(1.2-ex)**2+0.5*(1.5-ex)**2
+    zx=(400-300*ex)/sqrt(300*dx)
+    px=norm.cdf(zx,loc=0,scale=1)
+    print("收入至少400元的概率",1-px)
+
+    ex2=0.2
+    dx2=0.2*0.8
+    zx=(60-300*ex2)/sqrt(300*0.2*0.8)
+    px=norm.cdf(zx,loc=0,scale=1)
+    print("多于60只的概率为:",1-px)
+
+def exercise_9():
+    ex=2.2
+    dx=1.4*1.4
+    x_bar=2
+    z=(x_bar-2.2)/sqrt(dx/52)
+    p_x_bar=norm.cdf(z,loc=0,scale=1)
+    print("px<2=",p_x_bar)
+
+    z52=(100-52*2.2)/sqrt(dx*52)
+    p52=norm.cdf(z52,loc=0,scale=1)
+    print("一年事故数少于100概率为：",p52)
+
+def exercise_11():
+    ex=5
+    dx=0.3
+    n=80
+    z=(5.1-5)/(sqrt(0.3)/sqrt(n))
+    p1=norm.cdf(z,loc=0,scale=1)*2-1
+    print('p1=',p1)
+
+    n=80
+    ex2=5-5
+    dx2=0.3/n+0.3/n
+    z2=0.1/(sqrt(dx2))
+    p2=norm.cdf(z2,loc=0,scale=1)*2-1
+    print("P{X-Y}=",p2)
+
+def central_limit_theory():
+    #中心极限定理的可视化证明
+    epoch=10
+    num=1000000
+    x=[]
+    plt.figure(figsize=[16,10],dpi=120)
+    pltnum=int((epoch+1)/2)
+    for i in range(epoch):
+        xi=np.random.uniform(-1,1,num)
+        plt.subplot(2,pltnum,i+1)
+        plt.hist(xi,bins=100,density=True,label="variable"+str(i))
+        x.append(xi)
+    sum=np.zeros(num)
+    for j in range(len(x)):
+        temp=[(sj+xj) for xj,sj in zip(x[j],sum)]
+        sum=temp
+    #plt.subplot(2,pltnum,i+2)
+    plt.figure(figsize=[16, 10], dpi=120)
+    plt.hist(sum,bins=100,density=True)
+    x=np.linspace(-2,2,1000)
+    sigma=1/3.0*epoch
+    y=norm.pdf(x,loc=0,scale=sqrt(sigma))
+    plt.plot(x,y,c='r')
+    plt.show()
+
+if __name__=="__main__":
+    central_limit_theory()
